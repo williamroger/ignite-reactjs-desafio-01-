@@ -1,5 +1,7 @@
 import styles from './TodoList.module.css';
 import Clipboard from '../../assets/Clipboard.svg';
+import { ButtonTrash } from '../ButtonTrash';
+import { Checkbox } from '../Checkbox';
 
 export function TodoList() {
   return (
@@ -25,6 +27,14 @@ export function TodoList() {
           </span>
           <h2>Você ainda não tem tarefas cadastradas</h2>
           <p>Crie tarefas e organize seus itens a fazer</p>
+        </div>
+        <div className={styles.todoItem}>
+          <Checkbox />
+          <span className={styles.text}>
+            <p>Integer urna interdum massa libero auctor neque turpis turpis semper. 
+              Duis vel sed fames integer.</p>
+          </span>
+          <ButtonTrash />
         </div>
       </div>
     </div>
