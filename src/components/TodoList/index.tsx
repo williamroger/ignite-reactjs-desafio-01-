@@ -1,41 +1,51 @@
 import styles from './TodoList.module.css';
-import Clipboard from '../../assets/Clipboard.svg';
-import { ButtonTrash } from '../ButtonTrash';
-import { Checkbox } from '../Checkbox';
 
-export function TodoList() {
+import { Todo } from '../../App';
+import { TodoEmpty } from '../TodoEmpty';
+import { TodoItem } from '../TodoItem';
+import { TodoHeader } from '../TodoHeader';
+import { Dispatch, SetStateAction } from 'react';
+
+interface TodoListProps {
+  todos: Todo[];
+  setTodos: Dispatch<SetStateAction<Todo[] | []>>;
+}
+
+export function TodoList({ todos, setTodos }: TodoListProps) {
+  const totalTodos = todos.length;
+  const todosFinished  = todos.filter(todo => todo.isFinished).length;
+
+  function handleToggleFinishTodo(todoToFinish: Todo) {
+    const newTodos = todos.map((todo) => {
+      if (todo.id === todoToFinish.id) {
+        return { ...todo, isFinished: !todo.isFinished }
+      }
+      return todo;
+    });
+    
+    setTodos(newTodos);
+  }
+
+  function handleRemoveTodo(todoToRemove: Todo) {
+    const todosFiltered = todos.filter((todo) => todo.id !== todoToRemove.id);
+    
+    setTodos(todosFiltered);
+  }
+
   return (
     <div className={styles.todoList}>
-      <div className={styles.header}>
-        <div className={styles.todoCounter}>
-          <h2>Tarefas Criadas</h2>
-          <span>
-            <p>0</p>
-          </span>
-        </div>
-        <div className={styles.todoCounter}>
-          <h2>Concluídas</h2>
-          <span>
-            <p>0</p>
-          </span>
-        </div>
-      </div>
+      <TodoHeader totalTodos={totalTodos} todosFinished={todosFinished} />
       <div className={styles.content}>
-        <div className={styles.empty}>
-          <span className={styles.icon}>
-            <img src={Clipboard} />
-          </span>
-          <h2>Você ainda não tem tarefas cadastradas</h2>
-          <p>Crie tarefas e organize seus itens a fazer</p>
-        </div>
-        <div className={styles.todoItem}>
-          <Checkbox />
-          <span className={styles.text}>
-            <p>Integer urna interdum massa libero auctor neque turpis turpis semper. 
-              Duis vel sed fames integer.</p>
-          </span>
-          <ButtonTrash />
-        </div>
+        {todos.length ? 
+          todos.map((todo) => (
+            <TodoItem 
+              key={todo.id} 
+              todo={todo} 
+              finishTodo={handleToggleFinishTodo}
+              removeTodo={handleRemoveTodo} />
+          ))
+          : <TodoEmpty />
+        }
       </div>
     </div>
   )
